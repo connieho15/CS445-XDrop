@@ -5,7 +5,7 @@ public class DynamicXDrop {
 	}
 
 	public static void dynamicXDrop() {
-		
+		// best overall score
 		double T_prime = 0;
 		
 		// best alignment score
@@ -14,20 +14,20 @@ public class DynamicXDrop {
 		// counter
 		double k = 0;
 		
-		// Lower bound for x-coordinate
+		// lower bound for x-coordinate
 		double L = 0;
 		
-		// Upper bound for x-coordinate 
+		// upper bound for x-coordinate 
 		double U = 0; 
 		double X = 3;
 		
-		// match
+		// match score
 		double mat = 3;
 		
-		// mismatch
+		// mismatch score
 		double mis = -2;
 		
-		// insertion/deletion
+		// insertion/deletion score
 		double ind = mis - (mat/2);
 		double half = 0.5;
 		
@@ -54,15 +54,14 @@ public class DynamicXDrop {
 		int M = MSTC7.length();
 		
 		// Scoring matrix s 
-		double[][] s = new double[N][M];
+		double[][] s = new double[N+1][M+1];
 		s[0][0] = 0;
 
 		long startTime = System.nanoTime();
 		
-		double i = 0;
 		while (L <= U+1) {
 			k++;
-			for (i = Math.ceil(L); i <= Math.floor(U)+1; i = i + half) {
+			for (double i = Math.ceil(L); i <= Math.floor(U)+1; i = i + half) {
 				double j = k-i; 
 				
 				if ((i+half < N) && (j+half < M)) {
@@ -85,7 +84,7 @@ public class DynamicXDrop {
 		
 						s[(int) i][(int) j] = Math.max(s1, Math.max(s2, Math.max(s3, s4)));
 					
-						// Do this if values are half values
+					// Do this if values are half values
 					} else {
 						double score = 0;
 						if (MSTB8.charAt((int) (i+half)) == MSTC7.charAt((int) (j+half))) {
@@ -105,11 +104,28 @@ public class DynamicXDrop {
 					}
 				}
 			}
-			
+
+			for (double i = Math.ceil(L); i < N; i++) {
+				if ((k - i > 0) && s[(int) i][(int) k - (int) i] > Double.NEGATIVE_INFINITY) {
+					L = i;
+					break;
+				}
+			}
+
+			int maxSoFar = 0;
+			for (double i = Math.ceil(L); i < N; i++) {
+				if ((k - i > 0) && s[(int) i][(int) k - (int) i] > Double.NEGATIVE_INFINITY) {
+					if (i > maxSoFar) {
+						maxSoFar = (int) i;
+					}
+				}
+			} U = maxSoFar;
+
 			L = Math.max(L, k+1-N);
 			U = Math.min(U, M-1);
 			T = T_prime; // Update best score seen so far
 		}
+
 		System.out.println("Alignment Score: " + T_prime);
 		
 		long endTime = System.nanoTime();
