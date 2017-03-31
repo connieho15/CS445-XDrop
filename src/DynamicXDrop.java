@@ -5,6 +5,7 @@ public class DynamicXDrop {
 	}
 
 	public static void dynamicXDrop() {
+		
 		double T_prime = 0;
 		double T = 0;
 		double k = 0;
@@ -42,6 +43,9 @@ public class DynamicXDrop {
 		// Scoring matrix s 
 		double[][] s = new double[N][M];
 		s[0][0] = 0;
+		
+
+		long startTime = System.nanoTime();
 		
 		while (L <= U+1) {
 			k++;
@@ -92,6 +96,9 @@ public class DynamicXDrop {
 			U = Math.min(U, M-1);
 			T = T_prime; // Update best score seen so far
 		}
-		System.out.println(T_prime);
+		System.out.println("Alignment Score: " + T_prime);
+		long endTime = System.nanoTime();
+		long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
+		System.out.println("Runtime: " + duration + "ms");
 	}
 }
