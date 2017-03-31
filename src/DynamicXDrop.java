@@ -7,14 +7,27 @@ public class DynamicXDrop {
 	public static void dynamicXDrop() {
 		
 		double T_prime = 0;
+		
+		// best alignment score
 		double T = 0;
+		
+		// counter
 		double k = 0;
+		
+		// Lower bound for x-coordinate
 		double L = 0;
+		
+		// Upper bound for x-coordinate 
 		double U = 0; 
 		double X = 3;
 		
+		// match
 		double mat = 3;
+		
+		// mismatch
 		double mis = -2;
+		
+		// insertion/deletion
 		double ind = mis - (mat/2);
 		double half = 0.5;
 		
@@ -71,7 +84,8 @@ public class DynamicXDrop {
 						}
 		
 						s[(int) i][(int) j] = Math.max(s1, Math.max(s2, Math.max(s3, s4)));
-					// Do this if values are half values
+					
+						// Do this if values are half values
 					} else {
 						double score = 0;
 						if (MSTB8.charAt((int) (i+half)) == MSTC7.charAt((int) (j+half))) {
@@ -97,6 +111,7 @@ public class DynamicXDrop {
 			T = T_prime; // Update best score seen so far
 		}
 		System.out.println("Alignment Score: " + T_prime);
+		
 		long endTime = System.nanoTime();
 		long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
 		System.out.println("Runtime: " + duration + "ms");
