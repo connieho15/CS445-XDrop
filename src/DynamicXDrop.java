@@ -5,30 +5,16 @@ public class DynamicXDrop {
 	}
 
 	public static void dynamicXDrop() {
-		// best overall score
-		double T_prime = 0;
+		double T_prime = 0;			// best overall score
+		double T = 0;				// best alignment score
+		double k = 0;				// counter 
+		double L = 0;				// lower bound for x-coordinate
+		double U = 0; 				// upper bound for x-coordinate 
+		double X = 6;				// X for X drop approach
 		
-		// best alignment score
-		double T = 0;
-		
-		// counter
-		double k = 0;
-		
-		// lower bound for x-coordinate
-		double L = 0;
-		
-		// upper bound for x-coordinate 
-		double U = 0; 
-		double X = 3;
-		
-		// match score
-		double mat = 3;
-		
-		// mismatch score
-		double mis = -2;
-		
-		// insertion/deletion score
-		double ind = mis - (mat/2);
+		double mat = 3;				// match score
+		double mis = -2; 			// mismatch score
+		double ind = mis - (mat/2);	// insertion/deletion score
 		double half = 0.5;
 		
 		// MRSA strain MSTB8 mecA gene sequence
@@ -57,6 +43,7 @@ public class DynamicXDrop {
 		double[][] s = new double[N+1][M+1];
 		s[0][0] = 0;
 
+		// Start runtime timer 
 		long startTime = System.nanoTime();
 		
 		while (L <= U+1) {
@@ -72,12 +59,16 @@ public class DynamicXDrop {
 						double s3 = Double.NEGATIVE_INFINITY;
 						double s4 = Double.NEGATIVE_INFINITY;					
 						
+						// match case:
 						if (L <= i-half && U >= i-half && MSTB8.charAt((int) i) == (MSTC7.charAt((int) j))) {
 							s1 = s[(int) (i-half)][(int) (j-half)] + (mat/2);
+						// mismatch case:
 						} if (L <= i-half && U >= i-half && MSTB8.charAt((int) i) != (MSTC7.charAt((int) j))) {
 							s2 = s[(int) (i-half)][(int) (j-half)] + (mis/2);
+						// deletion case:
 						} if (i <= U) {
 							s3 = s[(int) i][(int) (j-1)] + ind;
+						// insertion case:
 						} if (L <= i-1) {
 							s4 = s[(int) (i-1)][(int) j] + ind;
 						}
@@ -87,14 +78,17 @@ public class DynamicXDrop {
 					// Do this if values are half values
 					} else {
 						double score = 0;
+						// match case: 
 						if (MSTB8.charAt((int) (i+half)) == MSTC7.charAt((int) (j+half))) {
 							score = mat/2;
+						// mismatch case: 
 						} else if (MSTB8.charAt((int) (i+half)) != MSTC7.charAt((int) (j+half))) {
 							score = mis/2;
 						}
 						s[(int) i][(int) j] = s[(int) (i-half)][(int) (j-half)] + score;
 					}
 					
+					// set best overall score
 					T_prime = Math.max(T_prime, s[(int) i][(int) j]);
 					
 					// X-drop: Don't consider extensions of alignment 
@@ -105,13 +99,14 @@ public class DynamicXDrop {
 				}
 			}
 
+			// trim upper and lower bounds:
 			for (double i = Math.ceil(L); i < N; i++) {
 				if ((k - i > 0) && s[(int) i][(int) k - (int) i] > Double.NEGATIVE_INFINITY) {
 					L = i;
 					break;
 				}
 			}
-
+			
 			int maxSoFar = 0;
 			for (double i = Math.ceil(L); i < N; i++) {
 				if ((k - i > 0) && s[(int) i][(int) k - (int) i] > Double.NEGATIVE_INFINITY) {
@@ -119,15 +114,18 @@ public class DynamicXDrop {
 						maxSoFar = (int) i;
 					}
 				}
-			} U = maxSoFar;
-
+			} 
+			
+			U = maxSoFar;
 			L = Math.max(L, k+1-N);
 			U = Math.min(U, M-1);
-			T = T_prime; // Update best score seen so far
+			T = T_prime;	// Update best score seen so far
 		}
 
+		// return the best overall score
 		System.out.println("Alignment Score: " + T_prime);
 		
+		// stop runtime timer
 		long endTime = System.nanoTime();
 		long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
 		System.out.println("Runtime: " + duration + "ms");
