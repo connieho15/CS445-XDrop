@@ -10,7 +10,7 @@ public class DynamicXDrop {
 		double k = 0;				// counter 
 		double L = 0;				// lower bound for x-coordinate
 		double U = 0; 				// upper bound for x-coordinate 
-		double X = 6;				// X for X drop approach
+		double X = 10;				// X for X drop approach
 		
 		double mat = 3;				// match score
 		double mis = -2; 			// mismatch score
@@ -39,11 +39,11 @@ public class DynamicXDrop {
 		int N = MSTB8.length();
 		int M = MSTC7.length();
 		
-		// Scoring matrix s 
+		// scoring matrix s 
 		double[][] s = new double[N+1][M+1];
 		s[0][0] = 0;
 
-		// Start runtime timer 
+		// start runtime timer 
 		long startTime = System.nanoTime();
 		
 		while (L <= U+1) {
@@ -52,7 +52,7 @@ public class DynamicXDrop {
 				double j = k-i; 
 				
 				if ((i+half < N) && (j+half < M)) {
-					// Do this if values are not halves 
+					// do this if values are not halves 
 					if (i == (int) i) {
 						double s1 = Double.NEGATIVE_INFINITY;
 						double s2 = Double.NEGATIVE_INFINITY;
@@ -75,7 +75,7 @@ public class DynamicXDrop {
 		
 						s[(int) i][(int) j] = Math.max(s1, Math.max(s2, Math.max(s3, s4)));
 					
-					// Do this if values are half values
+					// do this if values are half values
 					} else {
 						double score = 0;
 						// match case: 
@@ -100,18 +100,18 @@ public class DynamicXDrop {
 			}
 
 			// trim upper and lower bounds:
-			for (double i = Math.ceil(L); i < N; i++) {
-				if ((k - i > 0) && s[(int) i][(int) k - (int) i] > Double.NEGATIVE_INFINITY) {
-					L = i;
+			for (double p = Math.ceil(L); p < N; p++) {
+				if ((k-p > 0 && k-p < N && k-p < M) && s[(int) p][(int) k - (int) p] > Double.NEGATIVE_INFINITY) {
+					L = p;
 					break;
 				}
 			}
 			
-			int maxSoFar = 0;
-			for (double i = Math.ceil(L); i < N; i++) {
-				if ((k - i > 0) && s[(int) i][(int) k - (int) i] > Double.NEGATIVE_INFINITY) {
-					if (i > maxSoFar) {
-						maxSoFar = (int) i;
+			double maxSoFar = Double.NEGATIVE_INFINITY;
+			for (double q = Math.ceil(L); q < N; q++) {
+				if ((k-q > 0 && k-q < N && k-q < M) && s[(int) q][(int) k - (int) q] > Double.NEGATIVE_INFINITY) {
+					if (q > maxSoFar) {
+						maxSoFar = (int) q;
 					}
 				}
 			} 
@@ -119,7 +119,7 @@ public class DynamicXDrop {
 			U = maxSoFar;
 			L = Math.max(L, k+1-N);
 			U = Math.min(U, M-1);
-			T = T_prime;	// Update best score seen so far
+			T = T_prime;	// update best score seen so far
 		}
 
 		// return the best overall score
