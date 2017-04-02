@@ -173,8 +173,8 @@ public class DynamicXDrop {
 			if (p==1 || p==2) {
 				x = a.charAt((int)pi) + x;
 				y = b.charAt((int)pj) + y;
-				pi=pi-half;
-				pj=pj-half;
+				pi=pi-1;
+				pj=pj-1;
 			} else 
 				// insertion
 				if (p==4){
