@@ -1,4 +1,3 @@
-
 public class DynamicXDrop {
 	static // MRSA strain MSTB8 mecA gene sequence
 			String MSTB8 = "tggggtggttacaacgttacaagatatgaagtggtaaatggtaatatcgacttaa"
@@ -63,7 +62,7 @@ public class DynamicXDrop {
 				double j = k-i; 
 				
 				if ((i+half < N) && (j+half < M)) {
-					System.out.println("i: " + i + "j: " + j);
+					// System.out.println("i: " + i + "j: " + j);
 					// do this if values are not halves 
 					if (i == (int) i) {
 						
@@ -75,19 +74,19 @@ public class DynamicXDrop {
 						// match case:
 						if (L <= i-half && U >= i-half && a.charAt((int) i) == (b.charAt((int) j))) {
 							s1 = s.get(i-half,  j-half) + (mat/2);
-							System.out.println("	MAT " + s1);
+							//System.out.println("	MAT " + s1);
 						// mismatch case:
 						} if (L <= i-half && U >= i-half && a.charAt((int) i) != (b.charAt((int) j))) {
 							s2 = s.get(i-half,  j-half) + (mis/2);
-							System.out.println("	MIS " + s2);
+							//System.out.println("	MIS " + s2);
 						// deletion case:
 						} if (i <= U) {
 							s3 = s.get(i, j-1) + ind;
-							System.out.println("	DEL " + s3);
+							//System.out.println("	DEL " + s3);
 						// insertion case:
 						} if (L <= i-1) {
 							s4 = s.get(i-1, j) + ind;
-							System.out.println("	INS " + s4);
+							//System.out.println("	INS " + s4);
 						}
 						if (s1 == Math.max(s1, Math.max(s2, Math.max(s3, s4)))) {ptrp = 1;} else {
 							if (s2 == Math.max(s1, Math.max(s2, Math.max(s3, s4)))) {ptrp = 2;} else {
@@ -104,12 +103,12 @@ public class DynamicXDrop {
 						// match case: 
 						if (a.charAt((int) (i+half)) == b.charAt((int) (j+half))) {
 							score = mat/2;
-							System.out.println("	MAT " + score);
+							//System.out.println("	MAT " + score);
 							ptrp = 1;
 						// mismatch case: 
 						} else if (a.charAt((int) (i+half)) != b.charAt((int) (j+half))) {
 							score = mis/2;
-							System.out.println("	MIS " + score);
+							//System.out.println("	MIS " + score);
 							ptrp = 2;
 						}
 						s.set(i, j, s.get(i-half, j-half) + score);
@@ -121,8 +120,8 @@ public class DynamicXDrop {
 						best_i = i;
 						best_j = j;
 						best_p = ptrp;
-						System.out.println(ptr.get(best_i, best_j));
-						System.out.println(s.get(i, j));
+						//System.out.println(ptr.get(best_i, best_j));
+						//System.out.println(s.get(i, j));
 					}
 					
 					T_prime = Math.max(T_prime, s.get(i, j));
@@ -152,13 +151,14 @@ public class DynamicXDrop {
 			
 			L = Math.max(L, k+1-N);
 			U = Math.min(U, M-1);
+			//System.out.println(L);
+			//System.out.println(U);
 			T = T_prime;	// update best score seen so far
 		}
 
 		// return the best overall score
 		System.out.println("Alignment Score: " + T_prime);
-		
-		System.out.println("besti: " + best_i + "bestj: " + best_j);
+		//System.out.println("besti: " + best_i + "bestj: " + best_j);
 		
 		// Traceback
 		double pi = best_i;
@@ -178,7 +178,6 @@ public class DynamicXDrop {
 			} else 
 				// insertion
 				if (p==4){
-					System.out.println("INSERTION AT" + pi + pj);
 					x = a.charAt((int)pi) + x;
 					y = "-" + y;
 					pi--;
@@ -190,19 +189,17 @@ public class DynamicXDrop {
 				}
 
 		}
-	
-			System.out.println(x);
-			System.out.println(y);
-			System.out.println(ptrs);
-		
+		//System.out.println(ptrs);
 		
 		// stop runtime timer
 		long endTime = System.nanoTime();
 		long duration = (endTime - startTime) / 1000000;  
 		System.out.println("Runtime: " + duration + "ms");
+		
+		System.out.println("Alignments:");
+		System.out.println(x);
+		System.out.println(y);
 	}
 	
 	
 }
-
-
