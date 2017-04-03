@@ -2,16 +2,22 @@ public class Test {
 
 	public static void main(String[] args) {
 		
-		// Testing DynamicXDrop
-		System.out.println("Testing...");
-		
 		// Two completely different sequences should return a score of 0
-		// Because this algorithm is meant for closely related sequences, no alignment will be produced
-		DynamicXDrop.dynamicXDrop("AAAAAAAA", "GGGGGGGG");
+		// Because this algorithm is meant for closely related sequences, no alignment will be produced	
+		System.out.println("Aligning 2 identical sequences:");
+		DynamicXDrop.dynamicXDrop("GGGGGGAAAGGGGGGG", "GGGGGGGAAAGGGGGG");
 		
-		// Two completely same sequences should return a high score and all-match alignment
-		DynamicXDrop.dynamicXDrop("CAAAAAAAAACAAAA", "CAAAAAAAAACAAAA");
+		System.out.println("\nAligning 2 identical sequences with 1 deletion:");
+		DynamicXDrop.dynamicXDrop("GGGGGGGGGGGG", "GGGGGGGGAGGG");
 		
+		System.out.println("\nAligning 2 identical sequences with 1 insertion:");
+		DynamicXDrop.dynamicXDrop("GGGGGGAGGG", "GGGGGGGGGG");
+		
+		System.out.println("\nAligning 2 different length sequences:");
+		DynamicXDrop.dynamicXDrop("GGGGGCCCGGGGGGGG", "GGGGGCCCGGGGGGGGGGAAAAAA");	
+		
+		System.out.println("\nAligning 2 completely different sequences:");
+		DynamicXDrop.dynamicXDrop("AAAAAATTTAAAAAAAAA", "GGGGGCCCGGGGGGGGGG");	
 		// TODO: Tests for Greedy method 
 		
 	} 
