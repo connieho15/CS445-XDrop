@@ -68,11 +68,10 @@ public class GreedyXDrop {
 		double c3 = Double.NEGATIVE_INFINITY;
 		
 		while (L <= U+2){
-			if (D >M) {
-			break;
-		}
+	
 			D++;
 			D_prime = D - Math.floor((X + (MATCH/2))/(MATCH-MISMATCH)) - 1;
+			
 			
 			if (D_prime < 0){continue;}
 			
@@ -107,25 +106,37 @@ public class GreedyXDrop {
 
 			for (double k = 0; k < M; k++) {
 				if( R[(int) D][(int) k] > Double.NEGATIVE_INFINITY){
-					L = Math.min(L, R[(int) D][(int) k]);
+					L = Math.min(L, k);
+					break;
 				}
 			}
 
 			for (double k = 0; k < M; k++) {
 				if(R[(int) D][(int) k] > Double.NEGATIVE_INFINITY){
-					U = Math.max(U, R[(int) D][(int) k]);
+					U = Math.max(U, k);
 				}
 			}
-
+			double tempk = 0.0;
 			for (double k = 0; k < M; k++) {
-		
-					L = Math.max(L, R[(int) D][(int) k] + 2);
+				if(R[(int) D][(int) k] == (N + k)){
+					tempk = k;
+				}
+			}
+			
+			for (double k = 0; k < M; k++) {
+					L = Math.max(L, tempk + 2);
 				
 			}
 
 			for (double k = 0; k < M; k++) {
-				
-					U = Math.min(U, R[(int) D][(int) k] - 2);
+				if(R[(int) D][(int) k] == M){
+					tempk = k;
+					break;
+				}
+			}
+			
+			for (double k = 0; k < M; k++) {
+					U = Math.min(U, tempk - 2);
 			}
 
 
