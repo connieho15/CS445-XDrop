@@ -19,7 +19,22 @@ public class Test {
 		System.out.println("\nAligning 2 completely different sequences:");
 		DynamicXDrop.dynamicXDrop("AAAAAATTTAAAAAAAAA", "GGGGGCCCGGGGGGGGGG");	
 		// TODO: Tests for Greedy method 
+		System.out.println("GREEDY ALG:");
+		System.out.println("Aligning 2 identical sequences:");
+		GreedyXDrop.GreedyXDropAlg("GGGGGGAAAGGGGGGG", "GGGGGGGAAAGGGGGG");
 		
+		System.out.println("\nAligning 2 identical sequences with 1 deletion:");
+		GreedyXDrop.GreedyXDropAlg("GGGGGGGGGGGG", "GGGGGGGGAGGG");
+		
+		System.out.println("\nAligning 2 identical sequences with 1 insertion:");
+		GreedyXDrop.GreedyXDropAlg("GGGGGGAGGG", "GGGGGGGGGG");
+		
+		System.out.println("\nAligning 2 different length sequences:");
+		GreedyXDrop.GreedyXDropAlg("GGGGGCCCGGGGGGGG", "GGGGGCCCGGGGGGGGGGAAAAAA");	
+		
+		System.out.println("\nAligning 2 completely different sequences:");
+		GreedyXDrop.GreedyXDropAlg("AAAAAATTTAAAAAAAAA", "GGGGGCCCGGGGGGGGGG");	
+	 
 	} 
 
 }

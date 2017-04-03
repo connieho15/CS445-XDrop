@@ -5,7 +5,7 @@ public class GreedyXDrop {
 	// Scoring
 	protected static final double MISMATCH = -2;
 	protected static final double MATCH = 3;
-	protected static final double X = 3;
+	protected static final double X = 10;
 	
 	public static void main(String[] args) {
 		// MRSA strain MSTB8 mecA gene sequence
@@ -74,6 +74,8 @@ public class GreedyXDrop {
 			D++;
 			D_prime = D - Math.floor((X + (MATCH/2))/(MATCH-MISMATCH)) - 1;
 			
+			if (D_prime < 0){continue;}
+			
 			for (double k = L; k < U+1; k++){
 				if (L<k){
 					c1 = R[(int) (D-1)][(int) (k-1)] + 1;
@@ -116,16 +118,14 @@ public class GreedyXDrop {
 			}
 
 			for (double k = 0; k < M; k++) {
-				System.out.println(R[(int) D][(int) k]);
-				if(R[(int) D][(int) k] == N+k){
+		
 					L = Math.max(L, R[(int) D][(int) k] + 2);
-				}
+				
 			}
 
 			for (double k = 0; k < M; k++) {
-				if(R[(int) D][(int) k] == M){
+				
 					U = Math.min(U, R[(int) D][(int) k] - 2);
-				}
 			}
 
 
