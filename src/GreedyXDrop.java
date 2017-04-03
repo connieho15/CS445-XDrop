@@ -1,6 +1,12 @@
 import java.util.ArrayList;
 
 public class GreedyXDrop {
+	
+	// Scoring
+	protected static final double MISMATCH = -2;
+	protected static final double MATCH = 3;
+	protected static final double X = 3;
+	
 	public static void main(String[] args) {
 		// MRSA strain MSTB8 mecA gene sequence
 		String MSTB8 = "tggggtggttacaacgttacaagatatgaagtggtaaatggtaatatcgacttaa"
@@ -22,29 +28,20 @@ public class GreedyXDrop {
 				+ "attaaaagacacgaaaaacaaagtttggaagaaaaatattatttccaaagaaaata"
 				+ "tcaatctattaactgatggtatgcaacaagtcgtaaataaaacacataaagaag";
 
-		GreedyXDropAlg(MSTB8, MSTC7);
+		GreedyXDropAlg(MSTC7, MSTB8);
 	}
 
 	public static void GreedyXDropAlg(String x, String y){
-
-		// Scoring
-		double MISMATCH = -2;
-		double MATCH = 3;
-
+		
 		// Seq Lengths
 		int M = x.length();
 		int N = y.length();
 
-		double[][] R = new double[M+N][N];
-		double[] T = new double[N];
+		double[][] R = new double[N+M+1][M+1];
+		double[] T = new double[N+1];			
 
-		double D = 0;
-		double L = 0;
-		double U = 0;
-		double X = 0;
-
-		double D_prime = 0;
-		double[][] S_prime = new double[M+N][N];
+		double D_prime = 0;			// Optimal distance
+		
 
 		double i = 0;
 		double j = 0;
@@ -52,21 +49,32 @@ public class GreedyXDrop {
 		// start runtime timer 
 		long startTime = System.nanoTime();
 
+		// Skips similar chars
 		while ((i < Math.min(M, N)) && x.charAt((int) i) == y.charAt((int) i)){
 			i++;
 		}
 
-		double T_prime = T[0] = S_prime[(int) (i+i)][0];
+		
+		R[0][0] = i;
+		double S_prime = computeS(i,i,0);
+		double T_prime = T[0] = S_prime;
 
-		D++;
-		D_prime = D - (X + (MATCH/2)/(MATCH-MISMATCH)) - 1;
-
+		double D = 0;			//Distance
+		double L = 0;			//Lower bound
+		double U = 0;			//Upper bound
+		
 		double c1 = Double.NEGATIVE_INFINITY;
 		double c2 = Double.NEGATIVE_INFINITY;
 		double c3 = Double.NEGATIVE_INFINITY;
-
+		
 		while (L <= U+2){
-			for (double k = L-1; k < U+1; k++){
+			if (D >M) {
+			break;
+		}
+			D++;
+			D_prime = D - Math.floor((X + (MATCH/2))/(MATCH-MISMATCH)) - 1;
+			
+			for (double k = L; k < U+1; k++){
 				if (L<k){
 					c1 = R[(int) (D-1)][(int) (k-1)] + 1;
 				}
@@ -80,13 +88,14 @@ public class GreedyXDrop {
 				i = Math.max(c1, Math.max(c2, c3));
 
 				j = i - k;
-				if (i> Double.NEGATIVE_INFINITY && S_prime[(int) (i+j)][(int) D]>=T[(int) D_prime]-X){
+				
+				if (i> Double.NEGATIVE_INFINITY && computeS(i,j,D)>=T[(int) D_prime]-X){
 					while (i<M && j<N && x.charAt((int) i) == y.charAt((int) j)) {
 						i++;
 						j++;
 					}
 					R[(int) D][(int) k] = i;
-					T_prime = Math.max(T_prime,S_prime[(int) (i+j)][(int) D]);
+					T_prime = Math.max(T_prime,computeS(i,j,D));
 				} else {
 					R[(int) D][(int) k] = Double.NEGATIVE_INFINITY;
 				}
@@ -94,27 +103,28 @@ public class GreedyXDrop {
 
 			T[(int) (D)] = T_prime;
 
-			for (double k = 0; k < N; k++) {
-				if(R[(int) D][(int) k] > Double.NEGATIVE_INFINITY){
+			for (double k = 0; k < M; k++) {
+				if( R[(int) D][(int) k] > Double.NEGATIVE_INFINITY){
 					L = Math.min(L, R[(int) D][(int) k]);
 				}
 			}
 
-			for (double k = 0; k < N; k++) {
+			for (double k = 0; k < M; k++) {
 				if(R[(int) D][(int) k] > Double.NEGATIVE_INFINITY){
-					U = Math.max(L, R[(int) D][(int) k]);
+					U = Math.max(U, R[(int) D][(int) k]);
 				}
 			}
 
-			for (double k = 0; k < N; k++) {
+			for (double k = 0; k < M; k++) {
+				System.out.println(R[(int) D][(int) k]);
 				if(R[(int) D][(int) k] == N+k){
-					U = Math.max(L, R[(int) D][(int) k] + 2);
+					L = Math.max(L, R[(int) D][(int) k] + 2);
 				}
 			}
 
-			for (double k = 0; k < N; k++) {
+			for (double k = 0; k < M; k++) {
 				if(R[(int) D][(int) k] == M){
-					L = Math.min(L, R[(int) D][(int) k] - 2);
+					U = Math.min(U, R[(int) D][(int) k] - 2);
 				}
 			}
 
@@ -128,6 +138,10 @@ public class GreedyXDrop {
 		long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
 		System.out.println("Runtime: " + duration + "ms");
 
+	}
+	
+	private static double computeS(double i, double j, double d){
+		return (i+j)*(MATCH/2)-d*(MATCH-MISMATCH);
 	}
 
 }
